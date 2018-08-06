@@ -1,6 +1,6 @@
 {
   "dtuDataToMQTask": {
-    "host": "j2web.cn",
+    "host": "sweb.cc",
     "port": 5672,
     "channel": 1000,
     "exchange": "dtu.data.in",
@@ -11,7 +11,7 @@
     "routingKey": "dtu.cdzs.data"
   },
   "dtuEventToMQTask": {
-    "host": "j2web.cn",
+    "host": "sweb.cc",
     "port": 5672,
     "channel": 1001,
     "exchange": "dtu.event.in",
@@ -22,7 +22,7 @@
     "routingKey": "dtu.cdzs.event"
   },
   "mqToDTUTask": {
-    "host": "j2web.cn",
+    "host": "sweb.cc",
     "port": 5672,
     "channel": 1002,
     "exchange": "dtu.data.out",
