@@ -1,0 +1,5 @@
+{
+	"httpURL":	"https://service.acrhub.com/service/apiv1/setParameterValue",
+	"certificatePath":	"./Config/WebserviceClientCertificate.p12",
+	"certificatePwd":	""
+}

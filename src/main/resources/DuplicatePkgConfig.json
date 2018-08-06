@@ -1,0 +1,5 @@
+﻿{
+    "ValidPackageDays": "365",
+    "EnableDuplicateMechanism": "true",
+    "DuplicatePackageDays": "7"
+}
