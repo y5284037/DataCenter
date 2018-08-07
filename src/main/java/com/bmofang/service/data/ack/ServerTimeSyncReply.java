@@ -4,6 +4,7 @@ import com.bmofang.service.data.constant.SizeOf;
 import com.bmofang.service.data.constant.DataCenterPkgType;
 import com.bmofang.service.data.util.BitCoverter;
 import lombok.Data;
+import org.springframework.stereotype.Component;
 
 /**********************************************
  *
@@ -15,6 +16,7 @@ import lombok.Data;
  *文件作者：  Arike.Y 
  *
  **********************************************/
+@Component
 @Data
 public class ServerTimeSyncReply {
     

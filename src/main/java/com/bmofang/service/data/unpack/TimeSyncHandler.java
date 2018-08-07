@@ -5,6 +5,8 @@ import com.bmofang.service.data.MQClient.Produce;
 import com.bmofang.service.data.model.DCUInfo;
 import com.bmofang.service.data.util.BitCoverter;
 import com.bmofang.service.data.ack.ServerTimeSyncReply;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.Base64;
 
@@ -18,10 +20,11 @@ import java.util.Base64;
  *文件作者：  Arike.Y 
  *
  **********************************************/
-
+@Component
 public class TimeSyncHandler {
     
-    private Produce produce = new Produce();
+    @Autowired
+    private Produce produce;
     
     /**
      * 处理时间同步请求

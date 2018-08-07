@@ -28,5 +28,6 @@ public class MQ_Config {
         dtuEventToMQTask = MQConfig.getJSONObject("dtuEventToMQTask");
         mqToDTUTask = MQConfig.getJSONObject("mqToDTUTask");
         dataOutQueue = (JSONArray) mqToDTUTask.get("queue");
+        
     }
 }

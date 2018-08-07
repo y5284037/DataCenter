@@ -4,6 +4,7 @@ import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 
@@ -17,7 +18,7 @@ import java.io.IOException;
  *文件作者：  Arike.Y 
  *
  **********************************************/
-
+@Component
 public class Produce {
     
     private Channel channel;

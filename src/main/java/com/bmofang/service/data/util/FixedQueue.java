@@ -1,5 +1,8 @@
 package com.bmofang.service.data.util;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import java.util.LinkedList;
 
 /**********************************************
@@ -21,9 +24,10 @@ public class FixedQueue<E> extends LinkedList<E> {
         super();
         this.limit = limit;
     }
+    
     @Override
     public boolean offer(E e) {
-        if(size()>=limit){
+        if (size() >= limit) {
             poll();
         }
         return super.offer(e);

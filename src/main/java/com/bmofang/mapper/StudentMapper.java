@@ -23,7 +23,6 @@ import java.util.List;
 
 @Mapper
 @Repository
-@Component
 public interface StudentMapper {
     @Select("SELECT * FROM student")
     List<Student> findall();

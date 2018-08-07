@@ -7,6 +7,7 @@ import com.bmofang.service.data.util.FixedQueue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 /**********************************************
  *
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
  *文件作者：  Arike.Y 
  *
  **********************************************/
-
+@Component
 public class ServerRecvDCUPortDataAck {
     private final byte kDataPkgType = DataCenterPkgType.RECV_DCU_PORT_DATA_ACK;
     private final int kLatestAckCount = 20;//注意dcu数据pkg ID包含19个以前从DTU发送的pkg ID。

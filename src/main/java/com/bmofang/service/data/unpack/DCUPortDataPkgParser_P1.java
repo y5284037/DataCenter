@@ -9,6 +9,8 @@ import com.bmofang.service.data.model.DCUDataPkgInfo;
 import com.bmofang.service.data.model.DCUPortData;
 import com.bmofang.service.data.model.DigitSignalData;
 import com.bmofang.service.data.util.BitCoverter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,10 +26,11 @@ import java.util.List;
  *文件作者：  Arike.Y 
  *
  **********************************************/
-
+@Component
 public class DCUPortDataPkgParser_P1 {
     
-    private DigitSignalDataParser digitSignalDataParser = new DigitSignalDataParser();
+    @Autowired
+    private DigitSignalDataParser digitSignalDataParser ;
     
     /**
      * 冰魔方解包入口

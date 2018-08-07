@@ -35,10 +35,11 @@ public class DCUHwModel {
     
     /**
      * 获取到硬件版本号
+     *
      * @param modelNum 对应版本号值的key
      * @return
      */
-    public static String getName(int modelNum){
+    public static String getName(int modelNum) {
         
         return hwModel.getString(Integer.toString(modelNum));
     }

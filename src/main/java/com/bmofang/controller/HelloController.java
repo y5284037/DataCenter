@@ -1,6 +1,8 @@
 package com.bmofang.controller;
 
+import com.bmofang.bean.OriginalData;
 import com.bmofang.bean.Student;
+import com.bmofang.mapper.OriginalDataMapper;
 import com.bmofang.mapper.StudentMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +36,8 @@ public class HelloController {
      */
     @Autowired
     StudentMapper studentMapper;
+    @Autowired
+    private OriginalDataMapper originalDataMapper;
     
     @GetMapping("/hello")
     public String hello(Model model) {
@@ -46,6 +50,8 @@ public class HelloController {
     public String findAll(Model model) {
         List<Student> students = studentMapper.findall();
         model.addAttribute("students", students);
+        System.out.println(studentMapper);
+        System.out.println(originalDataMapper);
         return "listStudent";
     }
     

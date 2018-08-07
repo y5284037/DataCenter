@@ -4,6 +4,7 @@ import com.bmofang.service.data.constant.SizeOf;
 import com.bmofang.service.data.constant.CommonConvention;
 import com.bmofang.service.data.model.DigitSignalData;
 import com.bmofang.service.data.util.BitCoverter;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
  *文件作者：  Arike.Y 
  *
  **********************************************/
-
+@Component
 public class DigitSignalDataParser {
     
     /**

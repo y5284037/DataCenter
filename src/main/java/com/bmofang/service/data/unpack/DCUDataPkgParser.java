@@ -6,6 +6,7 @@ import com.bmofang.service.data.model.DCUDataPkgInfo;
 import com.bmofang.service.data.model.DCUInfo;
 import com.bmofang.service.data.util.BitCoverter;
 import com.bmofang.service.data.util.DCUHwModel;
+import org.springframework.stereotype.Component;
 
 /**********************************************
  *
@@ -17,7 +18,7 @@ import com.bmofang.service.data.util.DCUHwModel;
  *文件作者：  Arike.Y 
  *
  **********************************************/
-
+@Component
 public class DCUDataPkgParser {
     
     /**

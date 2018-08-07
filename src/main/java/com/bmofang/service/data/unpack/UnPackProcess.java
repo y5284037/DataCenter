@@ -1,6 +1,10 @@
 package com.bmofang.service.data.unpack;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.bmofang.bean.OriginalData;
+import com.bmofang.bean.Student;
+import com.bmofang.mapper.OriginalDataMapper;
 import com.bmofang.service.data.MQClient.Produce;
 import com.bmofang.service.data.constant.ProtocolVersion;
 import com.bmofang.service.data.constant.DCUDataPkgType;
@@ -9,7 +13,15 @@ import com.bmofang.service.data.model.DCUDataPkgInfo;
 import com.bmofang.service.data.model.DCUInfo;
 import com.bmofang.service.data.model.DCUPortData;
 import com.bmofang.service.data.ack.ServerRecvDCUPortDataAck;
+import lombok.Data;
+import org.apache.taglibs.standard.tag.common.sql.DataSourceUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
+import javax.annotation.Resource;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -24,15 +36,25 @@ import java.util.List;
  *文件作者：  Arike.Y
  *
  **********************************************/
-
+@Component
+@Data
 public class UnPackProcess {
-    private DCUPortDataPkgParser_P1 dcuPortDataPkgParser_p1 = new DCUPortDataPkgParser_P1();
-    private DCUPortDataPkgParser_P2 dcuPortDataPkgParser_p2 = new DCUPortDataPkgParser_P2();
-    private DCUDataPkgParser dcuDataPkgParser = new DCUDataPkgParser();
-    private TimeSyncHandler timeSyncHandler = new TimeSyncHandler();
+    @Autowired
+    private OriginalDataMapper originalDataMapper;
+    @Autowired
+    private DCUPortDataPkgParser_P1 dcuPortDataPkgParser_p1;
+    @Autowired
+    private DCUPortDataPkgParser_P2 dcuPortDataPkgParser_p2;
+    @Autowired
+    private DCUDataPkgParser dcuDataPkgParser;
+    @Autowired
+    private TimeSyncHandler timeSyncHandler;
+    @Autowired
+    private Produce produce;
+    
     private HashMap<Long, ServerRecvDCUPortDataAck> dataPkgAcks = new HashMap<>();
+    
     private Base64.Encoder encoder = Base64.getEncoder();
-    private Produce produce = new Produce();
     
     /**
      * 解包函数
@@ -59,9 +81,8 @@ public class UnPackProcess {
                 break;
             default:
         }
-        
-        System.out.println(DCUDataPkgInfo);
-        System.out.println(collectData);
+//        System.out.println(DCUDataPkgInfo);
+//        System.out.println(collectData);
     }
     
     /**
@@ -135,26 +156,24 @@ public class UnPackProcess {
      */
     private void HandleDCUPortData(String routingKey, String dtuID, DCUCollectData collectData, DCUDataPkgInfo DCUDataPkgInfo) {
         // 处理一个收到的合法的、非重复的数据包
-        HandleNewPortDataPkg(routingKey, dtuID, collectData, DCUDataPkgInfo);
-    }
-    
-    /**
-     * 处理一个新的合法的数据包((进行回执调用以及持久化))
-     *
-     * @param routingKey     路由键
-     * @param dtuID          数据传输单元ID
-     * @param collectData    DCU端口采集数据
-     * @param DCUDataPkgInfo DCU数据包信息
-     */
-    private void HandleNewPortDataPkg(String routingKey, String dtuID, DCUCollectData collectData, DCUDataPkgInfo DCUDataPkgInfo) {
+        OriginalData originalData = new OriginalData();
         long dcuID = DCUDataPkgInfo.getDcuInfo().getDcuID();
         int pkgID = collectData.getPkgID();
         long collectTimestamp = collectData.getCollectTimestamp();
-        
-        
+        String portData = JSON.toJSONString(collectData.getData());
+        System.out.println(portData);
+        originalData.setDCUID(dcuID);
+        originalData.setPkgID(pkgID);
+        originalData.setCollectTime(collectTimestamp);
+        originalData.setData(portData);
+        //todo  下午继续
+        originalDataMapper.add(originalData);
+        System.out.println(originalDataMapper);
+        System.out.println(JSON.toJSONString(dataPkgAcks));
         // 5.向监测器返回数据包接收回执
         AckRecvDCUPortDataPkg(routingKey, dtuID, dcuID, pkgID, collectTimestamp);
     }
+    
     
     /**
      * 发送数据包回执
@@ -166,6 +185,7 @@ public class UnPackProcess {
      */
     private void AckRecvDCUPortDataPkg(String rouyingKey, String dtuID, long dcuID, int pkgID, long collectTimestamp) {
         ServerRecvDCUPortDataAck serverRecvDCUPortDataAck;
+        
         if (dataPkgAcks.containsKey(dcuID)) {
             serverRecvDCUPortDataAck = dataPkgAcks.get(dcuID);
         } else {

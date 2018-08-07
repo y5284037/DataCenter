@@ -9,12 +9,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 //@EnableCaching
 @MapperScan(basePackages = "com/bmofang/mapper")
 public class SpringbootApplication {
-    
+
     public static void main(String[] args) {
-        
         SpringApplication.run(SpringbootApplication.class, args);
-        
     }
-    
-    
 }
