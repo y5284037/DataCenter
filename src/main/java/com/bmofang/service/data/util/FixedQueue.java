@@ -1,8 +1,5 @@
 package com.bmofang.service.data.util;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import java.util.LinkedList;
 
 /**********************************************
@@ -19,7 +16,7 @@ import java.util.LinkedList;
 public class FixedQueue<E> extends LinkedList<E> {
     //队列长度
     private int limit;
-    
+   
     public FixedQueue(int limit) {
         super();
         this.limit = limit;

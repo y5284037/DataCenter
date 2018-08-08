@@ -20,7 +20,7 @@
         </encoder>
         <!-- 过滤掉 TRACE 和 DEBUG 级别的日志-->
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
-            <level>DEBUG</level>
+            <level>INFO</level>
         </filter>
     </appender>
 

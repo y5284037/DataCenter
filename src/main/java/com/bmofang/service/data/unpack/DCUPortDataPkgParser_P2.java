@@ -28,8 +28,13 @@ import java.util.List;
 @Component
 public class DCUPortDataPkgParser_P2 {
     
+    private final DigitSignalDataParser digitSignalDataParser ;
+    
     @Autowired
-    private DigitSignalDataParser digitSignalDataParser ;
+    public DCUPortDataPkgParser_P2(DigitSignalDataParser digitSignalDataParser) {
+        this.digitSignalDataParser = digitSignalDataParser;
+    }
+    
     /**
      * 冰心解包入口
      *

@@ -33,7 +33,7 @@ public class JSONCoverter {
         
         JSONObject jsonObject = new JSONObject();
         
-        File file = new File(System.getProperty("user.dir") + "\\src\\main\\resources\\" + fileName);
+        File file = new File( JSONCoverter.class.getResource("/"+fileName).getPath());
         try {
             Reader fileReader = new FileReader(file);
             JSONReader JsonFileReader = new JSONReader(fileReader);

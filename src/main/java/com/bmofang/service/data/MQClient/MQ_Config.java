@@ -23,7 +23,7 @@ public class MQ_Config {
     public static JSONArray dataOutQueue;
     
     static {
-        JSONObject MQConfig = JSONCoverter.JsonFileToMap("MQTaskConfig.json");
+        JSONObject MQConfig = JSONCoverter.JsonFileToMap("conf/MQTaskConfig.json");
         dtuDataToMQTask = MQConfig.getJSONObject("dtuDataToMQTask");
         dtuEventToMQTask = MQConfig.getJSONObject("dtuEventToMQTask");
         mqToDTUTask = MQConfig.getJSONObject("mqToDTUTask");

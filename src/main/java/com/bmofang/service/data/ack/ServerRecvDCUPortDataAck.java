@@ -21,7 +21,6 @@ import org.springframework.stereotype.Component;
  **********************************************/
 @Component
 public class ServerRecvDCUPortDataAck {
-    private final byte kDataPkgType = DataCenterPkgType.RECV_DCU_PORT_DATA_ACK;
     private final int kLatestAckCount = 20;//注意dcu数据pkg ID包含19个以前从DTU发送的pkg ID。
     
     public FixedQueue<RecvDCUPortDataAck> ackQueue;
@@ -55,7 +54,8 @@ public class ServerRecvDCUPortDataAck {
         int offset = 0;
         byte[] binaryData = new byte[SizeOf.INT_8 + kLatestAckCount * (SizeOf.INT_32 + SizeOf.INT_16)];
         byte[] elem;
-        
+    
+        byte kDataPkgType = DataCenterPkgType.RECV_DCU_PORT_DATA_ACK;
         elem = new byte[]{kDataPkgType};
         System.arraycopy(elem, 0, binaryData, offset, elem.length);
         offset += elem.length;

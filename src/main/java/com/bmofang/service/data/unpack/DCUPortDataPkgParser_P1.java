@@ -29,8 +29,12 @@ import java.util.List;
 @Component
 public class DCUPortDataPkgParser_P1 {
     
+    private final DigitSignalDataParser digitSignalDataParser ;
+    
     @Autowired
-    private DigitSignalDataParser digitSignalDataParser ;
+    public DCUPortDataPkgParser_P1(DigitSignalDataParser digitSignalDataParser) {
+        this.digitSignalDataParser = digitSignalDataParser;
+    }
     
     /**
      * 冰魔方解包入口
@@ -103,7 +107,7 @@ public class DCUPortDataPkgParser_P1 {
         portData.put(portTypeC, new ArrayList<>());
         
         for (int portNum = first_port; portNum <= last_prot; portNum++) {
-            //todo 解包过程有问题，所有数据全部转换成了无符号的Int整型，其实某些数据是有符号位的。
+            //todo 解包过程有问题，所有数据全部转换成了无符号的Int整型，其实某些数据是有符号位的。√
             if (portNum >= 1 && portNum <= Convention.ACC_NUM_PORT_A) { //1-10
                 short data = BitCoverter.toInt16(dtuData, offset + unpackedBytes);
                 unpackedBytes += SizeOf.INT_16;

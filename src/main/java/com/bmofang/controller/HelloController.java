@@ -1,6 +1,5 @@
 package com.bmofang.controller;
 
-import com.bmofang.bean.OriginalData;
 import com.bmofang.bean.Student;
 import com.bmofang.mapper.OriginalDataMapper;
 import com.bmofang.mapper.StudentMapper;
@@ -34,10 +33,14 @@ public class HelloController {
     /**
      * 测试Controller
      */
+    private final StudentMapper studentMapper;
+    private final OriginalDataMapper originalDataMapper;
+    
     @Autowired
-    StudentMapper studentMapper;
-    @Autowired
-    private OriginalDataMapper originalDataMapper;
+    public HelloController(StudentMapper studentMapper, OriginalDataMapper originalDataMapper) {
+        this.studentMapper = studentMapper;
+        this.originalDataMapper = originalDataMapper;
+    }
     
     @GetMapping("/hello")
     public String hello(Model model) {

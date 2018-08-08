@@ -3,25 +3,18 @@ package com.bmofang.service.data.unpack;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bmofang.bean.OriginalData;
-import com.bmofang.bean.Student;
 import com.bmofang.mapper.OriginalDataMapper;
 import com.bmofang.service.data.MQClient.Produce;
-import com.bmofang.service.data.constant.ProtocolVersion;
+import com.bmofang.service.data.ack.ServerRecvDCUPortDataAck;
 import com.bmofang.service.data.constant.DCUDataPkgType;
+import com.bmofang.service.data.constant.ProtocolVersion;
 import com.bmofang.service.data.model.DCUCollectData;
 import com.bmofang.service.data.model.DCUDataPkgInfo;
 import com.bmofang.service.data.model.DCUInfo;
 import com.bmofang.service.data.model.DCUPortData;
-import com.bmofang.service.data.ack.ServerRecvDCUPortDataAck;
-import lombok.Data;
-import org.apache.taglibs.standard.tag.common.sql.DataSourceUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
 
-import javax.annotation.Resource;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
@@ -37,24 +30,28 @@ import java.util.List;
  *
  **********************************************/
 @Component
-@Data
 public class UnPackProcess {
-    @Autowired
-    private OriginalDataMapper originalDataMapper;
-    @Autowired
-    private DCUPortDataPkgParser_P1 dcuPortDataPkgParser_p1;
-    @Autowired
-    private DCUPortDataPkgParser_P2 dcuPortDataPkgParser_p2;
-    @Autowired
-    private DCUDataPkgParser dcuDataPkgParser;
-    @Autowired
-    private TimeSyncHandler timeSyncHandler;
-    @Autowired
-    private Produce produce;
     
-    private HashMap<Long, ServerRecvDCUPortDataAck> dataPkgAcks = new HashMap<>();
+    private final OriginalDataMapper originalDataMapper;
+    private final DCUPortDataPkgParser_P1 dcuPortDataPkgParser_p1;
+    private final DCUPortDataPkgParser_P2 dcuPortDataPkgParser_p2;
+    private final DCUDataPkgParser dcuDataPkgParser;
+    private final TimeSyncHandler timeSyncHandler;
+    private final Produce produce;
+    private HashMap<Long, ServerRecvDCUPortDataAck> dataPkgAcks;
+    private Base64.Encoder encoder;
     
-    private Base64.Encoder encoder = Base64.getEncoder();
+    @Autowired
+    public UnPackProcess(OriginalDataMapper originalDataMapper, DCUPortDataPkgParser_P1 dcuPortDataPkgParser_p1, DCUPortDataPkgParser_P2 dcuPortDataPkgParser_p2, DCUDataPkgParser dcuDataPkgParser, TimeSyncHandler timeSyncHandler, Produce produce) {
+        this.originalDataMapper = originalDataMapper;
+        this.dcuPortDataPkgParser_p1 = dcuPortDataPkgParser_p1;
+        this.dcuPortDataPkgParser_p2 = dcuPortDataPkgParser_p2;
+        this.dcuDataPkgParser = dcuDataPkgParser;
+        this.timeSyncHandler = timeSyncHandler;
+        this.produce = produce;
+        this.dataPkgAcks = new HashMap<>();
+        this.encoder = Base64.getEncoder();
+    }
     
     /**
      * 解包函数
@@ -81,8 +78,8 @@ public class UnPackProcess {
                 break;
             default:
         }
-//        System.out.println(DCUDataPkgInfo);
-//        System.out.println(collectData);
+        System.out.println(DCUDataPkgInfo);
+        System.out.println(collectData);
     }
     
     /**
@@ -161,19 +158,18 @@ public class UnPackProcess {
         int pkgID = collectData.getPkgID();
         long collectTimestamp = collectData.getCollectTimestamp();
         String portData = JSON.toJSONString(collectData.getData());
-        System.out.println(portData);
+//        System.out.println(portData);
         originalData.setDCUID(dcuID);
         originalData.setPkgID(pkgID);
         originalData.setCollectTime(collectTimestamp);
         originalData.setData(portData);
-        //todo  下午继续
+        //todo  添加了数据持久化的代码 √
         originalDataMapper.add(originalData);
-        System.out.println(originalDataMapper);
-        System.out.println(JSON.toJSONString(dataPkgAcks));
+//        System.out.println(originalDataMapper);
+//        System.out.println(JSON.toJSONString(dataPkgAcks));
         // 5.向监测器返回数据包接收回执
         AckRecvDCUPortDataPkg(routingKey, dtuID, dcuID, pkgID, collectTimestamp);
     }
-    
     
     /**
      * 发送数据包回执

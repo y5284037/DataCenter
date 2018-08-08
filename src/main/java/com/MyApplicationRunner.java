@@ -18,8 +18,12 @@ import org.springframework.stereotype.Component;
  **********************************************/
 @Component
 public class MyApplicationRunner implements ApplicationRunner {
+    private final Consum consum;
+    
     @Autowired
-    private Consum consum;
+    public MyApplicationRunner(Consum consum) {
+        this.consum = consum;
+    }
     
     @Override
     public void run(ApplicationArguments args) throws Exception {

@@ -23,8 +23,12 @@ import java.util.Base64;
 @Component
 public class TimeSyncHandler {
     
+    private final Produce produce;
+    
     @Autowired
-    private Produce produce;
+    public TimeSyncHandler(Produce produce) {
+        this.produce = produce;
+    }
     
     /**
      * 处理时间同步请求

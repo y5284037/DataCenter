@@ -30,7 +30,7 @@ public class DCUHwModel {
      */
     @SuppressWarnings("unchecked")
     private static void LoadHardwareModelConfig() {
-        hwModel = JSONCoverter.JsonFileToMap("HardwareModelConfig.json");
+        hwModel = JSONCoverter.JsonFileToMap("conf/HardwareModelConfig.json");
     }
     
     /**
