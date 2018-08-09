@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bmofang.bean.OriginalData;
 import com.bmofang.mapper.OriginalDataMapper;
-import com.bmofang.service.data.MQClient.Produce;
+import com.bmofang.service.data.oldMQClient.Produce;
 import com.bmofang.service.data.ack.ServerRecvDCUPortDataAck;
 import com.bmofang.service.data.constant.DCUDataPkgType;
 import com.bmofang.service.data.constant.ProtocolVersion;
@@ -12,6 +12,7 @@ import com.bmofang.service.data.model.DCUCollectData;
 import com.bmofang.service.data.model.DCUDataPkgInfo;
 import com.bmofang.service.data.model.DCUInfo;
 import com.bmofang.service.data.model.DCUPortData;
+import com.bmofang.service.data.rabbitMQ.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -37,20 +38,20 @@ public class UnPackProcess {
     private final DCUPortDataPkgParser_P2 dcuPortDataPkgParser_p2;
     private final DCUDataPkgParser dcuDataPkgParser;
     private final TimeSyncHandler timeSyncHandler;
-    private final Produce produce;
+    private final Producer producer;
     private HashMap<Long, ServerRecvDCUPortDataAck> dataPkgAcks;
     private Base64.Encoder encoder;
     
     @Autowired
-    public UnPackProcess(OriginalDataMapper originalDataMapper, DCUPortDataPkgParser_P1 dcuPortDataPkgParser_p1, DCUPortDataPkgParser_P2 dcuPortDataPkgParser_p2, DCUDataPkgParser dcuDataPkgParser, TimeSyncHandler timeSyncHandler, Produce produce) {
+    public UnPackProcess(OriginalDataMapper originalDataMapper, DCUPortDataPkgParser_P1 dcuPortDataPkgParser_p1, DCUPortDataPkgParser_P2 dcuPortDataPkgParser_p2, DCUDataPkgParser dcuDataPkgParser, TimeSyncHandler timeSyncHandler , Producer producer) {
         this.originalDataMapper = originalDataMapper;
         this.dcuPortDataPkgParser_p1 = dcuPortDataPkgParser_p1;
         this.dcuPortDataPkgParser_p2 = dcuPortDataPkgParser_p2;
         this.dcuDataPkgParser = dcuDataPkgParser;
         this.timeSyncHandler = timeSyncHandler;
-        this.produce = produce;
         this.dataPkgAcks = new HashMap<>();
         this.encoder = Base64.getEncoder();
+        this.producer = producer;
     }
     
     /**
@@ -192,6 +193,6 @@ public class UnPackProcess {
         JSONObject dtuOutData = new JSONObject();
         dtuOutData.put("DTUID", dtuID);
         dtuOutData.put("Data", encoder.encodeToString(serverRecvDCUPortDataAck.Serialize()));
-        produce.publish(rouyingKey, dtuOutData.toString().getBytes());
+        producer.publish(rouyingKey, dtuOutData.toString().getBytes());
     }
 }

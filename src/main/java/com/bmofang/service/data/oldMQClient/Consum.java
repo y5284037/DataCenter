@@ -1,4 +1,4 @@
-package com.bmofang.service.data.MQClient;
+package com.bmofang.service.data.oldMQClient;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;

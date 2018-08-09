@@ -1,4 +1,4 @@
-package com.bmofang.service.data.MQClient;
+package com.bmofang.service.data.oldMQClient;
 
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;

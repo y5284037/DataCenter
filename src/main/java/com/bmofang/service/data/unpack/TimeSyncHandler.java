@@ -1,8 +1,9 @@
 package com.bmofang.service.data.unpack;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bmofang.service.data.MQClient.Produce;
+import com.bmofang.service.data.oldMQClient.Produce;
 import com.bmofang.service.data.model.DCUInfo;
+import com.bmofang.service.data.rabbitMQ.Producer;
 import com.bmofang.service.data.util.BitCoverter;
 import com.bmofang.service.data.ack.ServerTimeSyncReply;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,12 @@ import java.util.Base64;
 @Component
 public class TimeSyncHandler {
     
-    private final Produce produce;
+    
+    private final Producer producer;
     
     @Autowired
-    public TimeSyncHandler(Produce produce) {
-        this.produce = produce;
+    public TimeSyncHandler( Producer producer) {
+        this.producer = producer;
     }
     
     /**
@@ -58,7 +60,7 @@ public class TimeSyncHandler {
         ServerTimeSyncReply reply = new ServerTimeSyncReply();
         reply.setDcuTimeSyncReqID(dcuTimeSyncReqID);
         reply.setServerTime(currentTime / 1000);
-        produce.publish(routingKey, makeDtuOutData(dtuID, reply.serialize()));
+        producer.publish(routingKey, makeDtuOutData(dtuID, reply.serialize()));
     }
     
     /**

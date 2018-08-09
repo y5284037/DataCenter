@@ -73,6 +73,11 @@
             <optional>true</optional> <!-- 这个需要为 true 热部署才有效 -->
         </dependency>
 
+        <!-- rabbitmq依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
 
         <!-- servlet依赖. -->
         <dependency>
@@ -80,6 +85,7 @@
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
@@ -124,13 +130,6 @@
             <groupId>redis.clients</groupId>
             <artifactId>jedis</artifactId>
             <version>2.9.0</version>
-        </dependency>
-
-        <!--rabbit MQ-->
-        <dependency>
-            <groupId>com.rabbitmq</groupId>
-            <artifactId>amqp-client</artifactId>
-            <version>5.2.0</version>
         </dependency>
 
         <!--因配置外部TOMCAT 而配置-->

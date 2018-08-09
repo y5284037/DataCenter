@@ -1,4 +1,4 @@
-package com.bmofang.service.data.MQClient;
+package com.bmofang.service.data.oldMQClient;
 
 import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.AMQP.BasicProperties;
@@ -26,7 +26,7 @@ public class Produce {
     
     public static String outToCdzs;
     public static String outToBT;
-    private static String exchange;
+    public static String exchange;
     
     /**
      * queue和exchange只需要声明一次即可,所以尽量避免多次声明,只有在第一次获取Produce的时候去声明.

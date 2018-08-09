@@ -38,11 +38,25 @@ spring:
           #打开PSCache，并指定每个连接上PSCache的大小。oracle设为true，mysql设为false。分库分表较多推荐设置为false
           pool-prepared-statements: false
           max-pool-prepared-statement-per-connection-size: 20
-    #配置视图解析,自动为视图文件加上前后缀.
+#rabbitMQ配置
+    rabbitmq:
+      host: sweb.cc
+      port: 5672
+      username: guest
+      password: guest
+      publisher-confirms: true    #  支持发布确认
+      publisher-returns: true     #  支持发布返回
+      listener:
+              direct:
+                acknowledge-mode: manual
+              simple:
+                acknowledge-mode: manual
+#配置视图解析,自动为视图文件加上前后缀.
     mvc:
       view:
         prefix: /WEB-INF/views/
         suffix: .jsp
+
 ##开启 sql+log日志   logging.leval+包名 (com.winterchen.dao)  +日志等级(debug)
 #logging:
 #  level:
