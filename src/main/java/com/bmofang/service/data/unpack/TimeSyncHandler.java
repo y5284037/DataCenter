@@ -1,7 +1,6 @@
 package com.bmofang.service.data.unpack;
 
 import com.alibaba.fastjson.JSONObject;
-import com.bmofang.service.data.oldMQClient.Produce;
 import com.bmofang.service.data.model.DCUInfo;
 import com.bmofang.service.data.rabbitMQ.Producer;
 import com.bmofang.service.data.util.BitCoverter;
@@ -60,7 +59,7 @@ public class TimeSyncHandler {
         ServerTimeSyncReply reply = new ServerTimeSyncReply();
         reply.setDcuTimeSyncReqID(dcuTimeSyncReqID);
         reply.setServerTime(currentTime / 1000);
-        producer.publish(routingKey, makeDtuOutData(dtuID, reply.serialize()));
+        producer.send(routingKey, makeDtuOutData(dtuID, reply.serialize()));
     }
     
     /**

@@ -1,6 +1,10 @@
 package com.bmofang.service.data.util;
 
-import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.Properties;
 
 /**********************************************
  *
@@ -12,25 +16,24 @@ import com.alibaba.fastjson.JSONObject;
  *文件作者：  Arike.Y 
  *
  **********************************************/
-
+@Component
+@Slf4j
 public class DCUHwModel {
     
-    private static JSONObject hwModel;
+    private static Properties hwModelConf;
     
     /**
      * 进行json对象的初始化
      */
     static {
-        hwModel = new JSONObject();
-        LoadHardwareModelConfig();//在静态代码块中执行是为了作为驱动加载一次
-    }
-    
-    /**
-     * 读取硬件配置文件
-     */
-    @SuppressWarnings("unchecked")
-    private static void LoadHardwareModelConfig() {
-        hwModel = JSONCoverter.JsonFileToMap("conf/HardwareModelConfig.json");
+        hwModelConf = new Properties();
+        try {
+            hwModelConf.load(DCUHwModel.class.getClassLoader().getResourceAsStream("conf/HardwareModelConfig.properties"));//在静态代码块中执行是为了作为驱动加载一次
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error("没有读取到硬件配置文件.");
+        }
+        
     }
     
     /**
@@ -41,6 +44,6 @@ public class DCUHwModel {
      */
     public static String getName(int modelNum) {
         
-        return hwModel.getString(Integer.toString(modelNum));
+        return hwModelConf.getProperty(Integer.toString(modelNum));
     }
 }

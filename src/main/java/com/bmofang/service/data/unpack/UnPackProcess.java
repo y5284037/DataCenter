@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bmofang.bean.OriginalData;
 import com.bmofang.mapper.OriginalDataMapper;
-import com.bmofang.service.data.oldMQClient.Produce;
 import com.bmofang.service.data.ack.ServerRecvDCUPortDataAck;
 import com.bmofang.service.data.constant.DCUDataPkgType;
 import com.bmofang.service.data.constant.ProtocolVersion;
@@ -30,6 +29,7 @@ import java.util.List;
  *文件作者：  Arike.Y
  *
  **********************************************/
+
 @Component
 public class UnPackProcess {
     
@@ -79,8 +79,8 @@ public class UnPackProcess {
                 break;
             default:
         }
-        System.out.println(DCUDataPkgInfo);
-        System.out.println(collectData);
+//        System.out.println(DCUDataPkgInfo);
+//        System.out.println(collectData);
     }
     
     /**
@@ -166,6 +166,7 @@ public class UnPackProcess {
         originalData.setData(portData);
         //todo  添加了数据持久化的代码 √
         originalDataMapper.add(originalData);
+        System.out.println(originalData);
 //        System.out.println(originalDataMapper);
 //        System.out.println(JSON.toJSONString(dataPkgAcks));
         // 5.向监测器返回数据包接收回执
@@ -193,6 +194,6 @@ public class UnPackProcess {
         JSONObject dtuOutData = new JSONObject();
         dtuOutData.put("DTUID", dtuID);
         dtuOutData.put("Data", encoder.encodeToString(serverRecvDCUPortDataAck.Serialize()));
-        producer.publish(rouyingKey, dtuOutData.toString().getBytes());
+        producer.send(rouyingKey, dtuOutData.toString().getBytes());
     }
 }

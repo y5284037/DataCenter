@@ -18,44 +18,54 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMqConfig {
     //交换机配置
-    public static final String DATA_EXCHANGE_IN = "dtu.data.in";
+    public static final String EXCHANGE_DC_TO_GC = "dtu.data.out";
     
-    public static final String DATA_EXCHANGE_OUT = "dtu.data.out";
+    public static final String EXCHANGE_DC_TO_DMP = "dcu_event";
+    //Queue配置
+    public static final String Queue_DATA_GC_TO_DC = "dtu.data.in";
     
-    public static final String EVENT_EXCHANGE_IN = "dtu.event.in";
+    public static final String Queue_DATA_DC_TO_GC = "dtu.data.out.cdzs";
     
-    //routingKey
+    public static final String Queue_EVENT_GC_TO_DC = "dtu.event.in";
     
+    public static final String Queue_EVENT_DC_TO_DMP = "dcu_event";
     
+    //routingKey配置
+    public static final String ROUTING_DC_TO_GC = "dtu.data.out.cdzs";
     
-    @Bean
-    public Queue DCUEventQueue(){
-        return QueueBuilder.durable("dcu_event").build();
-    }
+    public static final String ROUTING_DC_TO_DMP = "dcu_event";
     
-    @Bean Queue DataOutQueue(){
-        return QueueBuilder.durable("dtu.data.out.cdzs").build();
-    }
-   
-    @Bean
-    public Exchange dcuEventExchange(){
-        return ExchangeBuilder.directExchange("dcu_event").durable(true).build();
-    }
     
     @Bean
-    public Exchange DataOutExchange(){
-        return ExchangeBuilder.directExchange("dtu.data.out").durable(true).build();
+    public Queue DCUEventQueue() {
+        return QueueBuilder.durable(Queue_EVENT_DC_TO_DMP).build();
     }
     
     @Bean
-    Binding bindingDataOutExchange(Queue DataOutQueue, Exchange DataOutExchange){
-        return BindingBuilder.bind(DataOutQueue).to(DataOutExchange).with("dtu.data.out.cdzs").noargs();
+    Queue DataOutQueue() {
+        return QueueBuilder.durable(Queue_DATA_DC_TO_GC).build();
+    }
+    
+    
+    @Bean
+    public Exchange dcuEventExchange() {
+        return ExchangeBuilder.directExchange(EXCHANGE_DC_TO_DMP).durable(true).build();
     }
     
     @Bean
-    Binding bindingDcuEventExchange(Queue DCUEventQueue, Exchange dcuEventExchange){
-        return BindingBuilder.bind(DCUEventQueue).to(dcuEventExchange).with("dcu_event").noargs();
+    public Exchange DataOutExchange() {
+        return ExchangeBuilder.directExchange(EXCHANGE_DC_TO_GC).durable(true).build();
     }
-
+    
+    @Bean
+    Binding bindingDataOutExchange(Queue DataOutQueue, Exchange DataOutExchange) {
+        return BindingBuilder.bind(DataOutQueue).to(DataOutExchange).with(ROUTING_DC_TO_GC).noargs();
+    }
+    
+    @Bean
+    Binding bindingDcuEventExchange(Queue DCUEventQueue, Exchange dcuEventExchange) {
+        return BindingBuilder.bind(DCUEventQueue).to(dcuEventExchange).with(ROUTING_DC_TO_DMP).noargs();
+    }
+    
     
 }

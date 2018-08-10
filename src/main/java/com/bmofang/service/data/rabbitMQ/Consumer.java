@@ -2,7 +2,6 @@ package com.bmofang.service.data.rabbitMQ;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.bmofang.service.data.oldMQClient.Produce;
 import com.bmofang.service.data.unpack.UnPackProcess;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
@@ -29,6 +28,7 @@ public class Consumer {
     
     private final UnPackProcess unPackProcess;
     
+    
     @Autowired
     public Consumer(UnPackProcess unPackProcess) {
         this.unPackProcess = unPackProcess;
@@ -41,18 +41,33 @@ public class Consumer {
      * @param channel the channel
      * @throws IOException the io exception  这里异常需要处理
      */
-    @RabbitListener(queues = {"dtu.data.in"})
-    public void deliverMessage(Message message, Channel channel) throws IOException {
+    @RabbitListener(queues = {RabbitMqConfig.Queue_DATA_GC_TO_DC})
+    public void deliverMessage1(Message message, Channel channel) throws IOException {
         String dataIn = new String(message.getBody(), "utf-8");
-        System.out.println(dataIn);
         JSONObject DataJson = JSON.parseObject(dataIn);
+        System.out.println(Thread.currentThread().getName()+":"+Thread.currentThread().getId()+":"+dataIn);
         String data = DataJson.getString("Data");
         Base64.Decoder decoder = Base64.getDecoder();
         String dtuID = DataJson.getString("DTUID");
         byte[] dtuData = decoder.decode(data);
-        String routingKey = Produce.outToCdzs;
-        unPackProcess.unpackData(routingKey, dtuID, dtuData);
+        unPackProcess.unpackData(RabbitMqConfig.ROUTING_DC_TO_GC, dtuID, dtuData);
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+    }
+    
+    @RabbitListener(queues = {RabbitMqConfig.Queue_EVENT_GC_TO_DC})
+    public void deliverMessage2(Message message, Channel channel) throws IOException {
+        String dataIn = new String(message.getBody(), "utf-8");
+        System.out.println(Thread.currentThread().getName()+":"+Thread.currentThread().getId()+":"+dataIn);
+        JSONObject dataJson = JSON.parseObject(dataIn);
+                    System.out.println(dataIn);
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+    }
+    
+    @RabbitListener(queues ={RabbitMqConfig.Queue_EVENT_DC_TO_DMP} )
+    public void  deliverMessage3(Message message,Channel channel) throws IOException {
+        String dataIn = new String(message.getBody(), "utf-8");
+        System.out.println(Thread.currentThread().getName()+":"+Thread.currentThread().getId()+":"+dataIn);
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(),false);
     }
     
 }

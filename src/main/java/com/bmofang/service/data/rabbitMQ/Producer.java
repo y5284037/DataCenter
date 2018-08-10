@@ -1,9 +1,16 @@
 package com.bmofang.service.data.rabbitMQ;
 
-import com.bmofang.service.data.oldMQClient.Produce;
-import org.springframework.amqp.core.AmqpTemplate;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.util.UUID;
 
 /**********************************************
  *
@@ -15,20 +22,62 @@ import org.springframework.stereotype.Component;
  *文件作者：  Arike.Y 
  *
  **********************************************/
-
+@Slf4j
 @Component
-public class Producer {
+public class Producer implements RabbitTemplate.ConfirmCallback,RabbitTemplate.ReturnCallback {
     
-    private final AmqpTemplate amqpTemplate;
+    
+    private final RabbitTemplate rabbitTemplate;
+    
+    /**
+     * 初始化RabbitTemplate操作类,将确认回调和返回回调配置.
+     */
+    @PostConstruct
+    public void init(){
+        rabbitTemplate.setConfirmCallback(this);
+        rabbitTemplate.setReturnCallback(this);
+    }
     
     @Autowired
-    public Producer(AmqpTemplate amqpTemplate) {
-        this.amqpTemplate = amqpTemplate;
+    public Producer(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
     }
     
-    public void publish(String routingKey,byte[] message){
-        amqpTemplate.convertAndSend(Produce.exchange, "dtu.data.out.cdzs", message);
-        
-        
+    /**
+     * ConfirmCallback接口用于实现消息发送到RabbitMQ交换器后接收ack回调。
+     * @param correlationData
+     * @param ack
+     * @param cause
+     */
+    @Override
+    public void confirm(CorrelationData correlationData, boolean ack, String cause) {
+        if(ack){
+//            System.out.println("消息发送成功:"+correlationData);
+        }else {
+          log.error("消息发送失败:"+cause);
+        }
+    
     }
+    
+    /**
+     * ReturnCallback接口用于实现消息发送到RabbitMQ交换器，但无相应队列与交换器绑定时的回调。
+     * @param message
+     * @param replyCode
+     * @param replyText
+     * @param exchange
+     * @param routingKey
+     */
+    @Override
+    public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {
+        log.error(message.getMessageProperties().getCorrelationId()+"该RoutingKey没有对应绑定exchange的Queue.发送失败");
+    }
+    
+    
+    public void send(String routingKey, Object message) {
+        CorrelationData correlationID = new CorrelationData(UUID.randomUUID().toString());
+        rabbitTemplate.convertAndSend(RabbitMqConfig.EXCHANGE_DC_TO_GC,routingKey,message,correlationID);
+    }
+    
 }
+
+

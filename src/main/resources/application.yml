@@ -46,11 +46,15 @@ spring:
       password: guest
       publisher-confirms: true    #  支持发布确认
       publisher-returns: true     #  支持发布返回
+      template:
+        mandatory: true           #  在消息没有被路由到合适队列情况下会将消息返还给消息发布者
       listener:
-              direct:
-                acknowledge-mode: manual
               simple:
                 acknowledge-mode: manual
+                concurrency: 5       #单个监听器最小线程数
+                max-concurrency: 5   #单个监听器最大线程数
+                retry:               #是否支持重试
+                  enabled: true
 #配置视图解析,自动为视图文件加上前后缀.
     mvc:
       view:
