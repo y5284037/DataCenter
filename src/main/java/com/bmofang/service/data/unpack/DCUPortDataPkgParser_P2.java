@@ -28,7 +28,7 @@ import java.util.List;
 @Component
 public class DCUPortDataPkgParser_P2 {
     
-    private final DigitSignalDataParser digitSignalDataParser ;
+    private final DigitSignalDataParser digitSignalDataParser;
     
     @Autowired
     public DCUPortDataPkgParser_P2(DigitSignalDataParser digitSignalDataParser) {
@@ -46,26 +46,13 @@ public class DCUPortDataPkgParser_P2 {
      * @return 是否解包成功
      */
     public boolean Unpack(DCUCollectData collectData, String dtuID, DCUDataPkgInfo DCUDataPkgInfo, byte[] dtuData, int offset) {
-        //端口采集数据包解包
-        doUnpack(collectData, dtuData, DCUDataPkgInfo,offset);
-        return true;
-    }
-    
-    /**
-     * 冰心数据包解包函数
-     *
-     * @param collectData 采集数据包实体类
-     * @param dtuData     DTU数据包
-     * @param offset      偏移量
-     */
-    private void doUnpack(DCUCollectData collectData, byte[] dtuData,DCUDataPkgInfo DCUDataPkgInfo, int offset) {
         int unpackedBytes = 0;
         //解包打包ID和采集时间
         collectData.setPkgID(BitCoverter.toUint16(dtuData, offset + unpackedBytes));
         unpackedBytes += SizeOf.INT_16;//移动偏移量
         collectData.setCollectTimestamp(BitCoverter.toUint64(dtuData, offset + unpackedBytes));
         unpackedBytes += SizeOf.INT_64;
-    
+        
         //获取重复数据包判断值
         String key = new StringBuilder().append(DCUDataPkgInfo.getDcuInfo().getDcuID()).append(collectData.getPkgID()).append(collectData.getCollectTimestamp()).toString();
         //todo 加入HashSet重复数据包缓存,用于重复数据包判断.
@@ -84,10 +71,11 @@ public class DCUPortDataPkgParser_P2 {
             unpackedBytes += SizeOf.INT_16;
             unpackedBytes += unpackPortData(collectData.getData(), collectData.getCollectTimestamp(), portType, first_port, last_port, dtuData, offset + unpackedBytes);
         }
+        return true;
     }
     
     /**
-     * 解包冰心端口数据
+     * 解包冰精端口数据
      *
      * @param portData    端口数据存放集合
      * @param collectTime 采集时间
@@ -97,7 +85,7 @@ public class DCUPortDataPkgParser_P2 {
      * @param dtuData     原始数据
      * @param offset      偏移量
      */
-    private int unpackPortData(HashMap<Byte, List<DCUPortData>> portData, long collectTime, byte portType, int first_port, int last_port, byte[] dtuData, int offset) {
+    private int unpackPortData(HashMap<String, List<DCUPortData>> portData, long collectTime, byte portType, int first_port, int last_port, byte[] dtuData, int offset) {
         //声明变量
         int unpackedBytes = 0;
         List<DCUPortData> dcuPortData = new ArrayList<>();
@@ -108,42 +96,42 @@ public class DCUPortDataPkgParser_P2 {
                 unpackedBytes += SizeOf.INT_16;
                 dcuPortData.add(new DCUPortData(portNum, (float) data / CommonConvention.FLOAT_AMPLIFY_FACTOR));
             }
-            portData.put(portType, dcuPortData);
+            portData.put(AcqPotyType.PORT_NAME[portType], dcuPortData);
         } else if (portType == AcqPotyType.ACQ_PORT_TYPE_B) {//开关报警类
             for (; portNum <= last_port; portNum++) {
                 List<DigitSignalData> digitSignalDataList = new ArrayList<>();
                 unpackedBytes += digitSignalDataParser.UnpackDigitSignalData(digitSignalDataList, collectTime, dtuData, offset + unpackedBytes);
                 dcuPortData.add(new DCUPortData(portNum, digitSignalDataList));
             }
-            portData.put(portType, dcuPortData);
+            portData.put(AcqPotyType.PORT_NAME[portType], dcuPortData);
         } else if (portType == AcqPotyType.ACQ_PORT_TYPE_R) {//电阻信号
             for (; portNum <= last_port; portNum++) {
                 short data = BitCoverter.toInt16(dtuData, offset + unpackedBytes);
                 unpackedBytes += SizeOf.INT_16;
                 dcuPortData.add(new DCUPortData(portNum, (float) data / CommonConvention.FLOAT_AMPLIFY_FACTOR));
             }
-            portData.put(portType, dcuPortData);
+            portData.put(AcqPotyType.PORT_NAME[portType], dcuPortData);
         } else if (portType == AcqPotyType.ACQ_PORT_TYPE_D) {//电能采集
             for (; portNum <= last_port; portNum++) {
                 long data = BitCoverter.toInt64(dtuData, offset + unpackedBytes);
                 unpackedBytes += SizeOf.INT_64;
                 dcuPortData.add(new DCUPortData(portNum, (double) data / CommonConvention.FLOAT_AMPLIFY_FACTOR));
             }
-            portData.put(portType, dcuPortData);
+            portData.put(AcqPotyType.PORT_NAME[portType], dcuPortData);
         } else if (portType == AcqPotyType.ACQ_PORT_TYPE_RF) {//RF类数据
             for (; portNum <= last_port; portNum++) {
                 int data = BitCoverter.toInt32(dtuData, offset + unpackedBytes);
                 unpackedBytes += SizeOf.INT_32;
                 dcuPortData.add(new DCUPortData(portNum, (double) data / CommonConvention.FLOAT_AMPLIFY_FACTOR));
             }
-            portData.put(portType, dcuPortData);
+            portData.put(AcqPotyType.PORT_NAME[portType], dcuPortData);
         } else if (portType == AcqPotyType.ACQ_PORT_TYPE_BT) {
             for (; portNum <= last_port; portNum++) {
                 short data = BitCoverter.toInt16(dtuData, offset + unpackedBytes);
                 unpackedBytes += SizeOf.INT_16;
                 dcuPortData.add(new DCUPortData(portNum, (double) data / CommonConvention.FLOAT_AMPLIFY_FACTOR));
             }
-            portData.put(portType, dcuPortData);
+            portData.put(AcqPotyType.PORT_NAME[portType], dcuPortData);
         }
         return unpackedBytes;
     }

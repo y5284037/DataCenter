@@ -13,7 +13,7 @@ package com.bmofang.service.data.constant;
 
 public class CommonConvention {
     
-    public static final String[] PORT_NAME = {"InvalidPort", "A", "R", "C", "DV", "KWH", "KWH_MB", "F", "B", "D", "RF", "BT"}; // 使用静态数组，以便数组只初始化一次。
+  
     public static final byte FLOAT_AMPLIFY_FACTOR = 100;
     // 端口类型的无效值.
     // F、R、BT类端口数据会在数据采集时用float数据类型表示，并在结构化时乘以100转换为int16_t型整数(可表示的数值范围是[-32768, 32767]),

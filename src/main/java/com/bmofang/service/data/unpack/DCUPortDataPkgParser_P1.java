@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+
 /**********************************************
  *
  //Copyright© 2014 冷云能源科技有限公司.版权所有
@@ -29,7 +30,7 @@ import java.util.List;
 @Component
 public class DCUPortDataPkgParser_P1 {
     
-    private final DigitSignalDataParser digitSignalDataParser ;
+    private final DigitSignalDataParser digitSignalDataParser;
     
     @Autowired
     public DCUPortDataPkgParser_P1(DigitSignalDataParser digitSignalDataParser) {
@@ -47,20 +48,6 @@ public class DCUPortDataPkgParser_P1 {
      * @return 是否解包成功
      */
     public boolean Unpack(DCUCollectData collectData, String dtuID, DCUDataPkgInfo DCUDataPkgInfo, byte[] dtuData, int offset) {
-        //端口采集数据包解包
-        
-        return donUnpack(collectData, dtuData, DCUDataPkgInfo, offset);
-    }
-    
-    /**
-     * 冰魔方端口采集数据解包
-     *
-     * @param collectData 采集数据实体类
-     * @param dtuData     dtu上行数据包
-     * @param offset      偏移量
-     * @return
-     */
-    private boolean donUnpack(DCUCollectData collectData, byte[] dtuData, DCUDataPkgInfo DCUDataPkgInfo, int offset) {
         int unpackedBytes = 0;
         //获取数据包ID
         collectData.setPkgID(BitCoverter.toUint16(dtuData, offset + unpackedBytes));
@@ -93,12 +80,12 @@ public class DCUPortDataPkgParser_P1 {
     private void unpackPortData(DCUCollectData collectData, int first_port, int last_prot, byte[] dtuData, int offset) {
         int unpackedBytes = 0;
         long collectTIME = collectData.getCollectTimestamp();
-        HashMap<Byte/*端口类型*/, List<DCUPortData>> portData = collectData.getData();
-        byte portTypeA = AcqPotyType.ACQ_PORT_TYPE_A;
-        byte portTypeR = AcqPotyType.ACQ_PORT_TYPE_R;
-        byte portTypeKWH = AcqPotyType.ACQ_PORT_TYPE_KWH;
-        byte portTypeDV = AcqPotyType.ACQ_PORT_TYPE_DV;
-        byte portTypeC = AcqPotyType.ACQ_PORT_TYPE_C;
+        HashMap<String/*端口类型*/, List<DCUPortData>> portData = collectData.getData();
+        String portTypeA = AcqPotyType.PORT_NAME[AcqPotyType.ACQ_PORT_TYPE_A];
+        String portTypeR = AcqPotyType.PORT_NAME[AcqPotyType.ACQ_PORT_TYPE_R];
+        String portTypeKWH = AcqPotyType.PORT_NAME[AcqPotyType.ACQ_PORT_TYPE_KWH];
+        String portTypeDV = AcqPotyType.PORT_NAME[AcqPotyType.ACQ_PORT_TYPE_DV];
+        String portTypeC = AcqPotyType.PORT_NAME[AcqPotyType.ACQ_PORT_TYPE_C];
         
         portData.put(portTypeA, new ArrayList<>());
         portData.put(portTypeR, new ArrayList<>());

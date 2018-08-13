@@ -5,8 +5,6 @@ import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -45,9 +43,9 @@ public class Producer implements RabbitTemplate.ConfirmCallback,RabbitTemplate.R
     
     /**
      * ConfirmCallback接口用于实现消息发送到RabbitMQ交换器后接收ack回调。
-     * @param correlationData
-     * @param ack
-     * @param cause
+     * @param correlationData 发送数据包中添加的数据包身份ID
+     * @param ack    发送状态(是否成功)
+     * @param cause  发送失败造成的原因
      */
     @Override
     public void confirm(CorrelationData correlationData, boolean ack, String cause) {
@@ -61,11 +59,11 @@ public class Producer implements RabbitTemplate.ConfirmCallback,RabbitTemplate.R
     
     /**
      * ReturnCallback接口用于实现消息发送到RabbitMQ交换器，但无相应队列与交换器绑定时的回调。
-     * @param message
-     * @param replyCode
-     * @param replyText
-     * @param exchange
-     * @param routingKey
+     * @param message       发送的数据
+     * @param replyCode     响应码
+     * @param replyText     响应消息
+     * @param exchange      交换机
+     * @param routingKey    路由键
      */
     @Override
     public void returnedMessage(Message message, int replyCode, String replyText, String exchange, String routingKey) {

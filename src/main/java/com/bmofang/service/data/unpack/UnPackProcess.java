@@ -95,7 +95,7 @@ public class UnPackProcess {
      */
     private void HandleDCUDataPkg_P1(String routingKey, String dtuID, DCUDataPkgInfo DCUDataPkgInfo, DCUCollectData collectData, byte[] dtuData, int offset) {
         
-        HashMap<Byte, List<DCUPortData>> data = new HashMap<>();
+        HashMap<String, List<DCUPortData>> data = new HashMap<>();
         collectData.setData(data);
         
         switch (DCUDataPkgInfo.getDataPkgType()) {
@@ -126,7 +126,7 @@ public class UnPackProcess {
      */
     private void HandleDCUDataPkg_P2(String routingKey, String dtuID, DCUDataPkgInfo DCUDataPkgInfo, DCUCollectData collectData, byte[] dtuData, int offset) {
         
-        HashMap<Byte, List<DCUPortData>> data = new HashMap<>();
+        HashMap<String, List<DCUPortData>> data = new HashMap<>();
         collectData.setData(data);
         
         switch (DCUDataPkgInfo.getDataPkgType()) {

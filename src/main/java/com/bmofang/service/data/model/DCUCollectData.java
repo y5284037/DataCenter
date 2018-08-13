@@ -19,5 +19,5 @@ import java.util.List;
 public class DCUCollectData {
         private int pkgID;			     // 从DCU发送到数据中心的每个数据包的ID
         private long collectTimestamp;	// Unix时间戳在8字节的整数值中表示数据收集时间。
-        private HashMap<Byte/*portType*/, List<DCUPortData>> data;
+        private HashMap<String/*portType*/, List<DCUPortData>> data;
 }

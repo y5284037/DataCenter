@@ -25,6 +25,6 @@ public class AcqPotyType {
     public static final byte ACQ_PORT_TYPE_D = 9;    // 从PLC采集的电能值，在通信中用byte64
     public static final byte ACQ_PORT_TYPE_RF = 10; // 虚拟通信端口，普通浮点数(float型); 最后转换成32位
     public static final byte ACQ_PORT_TYPE_BT = 11;// 板载温度，byte16
-  
     
+    public static final String[] PORT_NAME = {"InvalidPort", "A", "R", "C", "DV", "KWH", "KWH_MB", "F", "B", "D", "RF", "BT"}; // 使用静态数组，以便数组只初始化一次。
 }

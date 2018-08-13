@@ -36,16 +36,17 @@ public class Consumer {
     
     /**
      * DIRECT模式.
+     * 上行数据:网关中心→数据处理中心
      *
-     * @param message the message
-     * @param channel the channel
+     * @param message 采集数据
+     * @param channel 连接通道
      * @throws IOException the io exception  这里异常需要处理
      */
     @RabbitListener(queues = {RabbitMqConfig.Queue_DATA_GC_TO_DC})
     public void deliverMessage1(Message message, Channel channel) throws IOException {
         String dataIn = new String(message.getBody(), "utf-8");
         JSONObject DataJson = JSON.parseObject(dataIn);
-        System.out.println(Thread.currentThread().getName()+":"+Thread.currentThread().getId()+":"+dataIn);
+        System.out.println(Thread.currentThread().getName() + ":" + Thread.currentThread().getId() + ":" + dataIn);
         String data = DataJson.getString("Data");
         Base64.Decoder decoder = Base64.getDecoder();
         String dtuID = DataJson.getString("DTUID");
@@ -54,20 +55,36 @@ public class Consumer {
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }
     
+    /**
+     * DIRECT模式.
+     * 上行数据:网关中心→数据处理中心
+     *
+     * @param message 网关中心事件数据
+     * @param channel 连接通道
+     * @throws IOException the io exception  这里异常需要处理
+     */
     @RabbitListener(queues = {RabbitMqConfig.Queue_EVENT_GC_TO_DC})
     public void deliverMessage2(Message message, Channel channel) throws IOException {
         String dataIn = new String(message.getBody(), "utf-8");
-        System.out.println(Thread.currentThread().getName()+":"+Thread.currentThread().getId()+":"+dataIn);
+        System.out.println(Thread.currentThread().getName() + ":" + Thread.currentThread().getId() + ":" + dataIn);
         JSONObject dataJson = JSON.parseObject(dataIn);
-                    System.out.println(dataIn);
+        System.out.println(dataIn);
         channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }
     
-    @RabbitListener(queues ={RabbitMqConfig.Queue_EVENT_DC_TO_DMP} )
-    public void  deliverMessage3(Message message,Channel channel) throws IOException {
+    /**
+     * DIRECT模式.
+     * 上行数据:数据中心→设备管理平台
+     *
+     * @param message 硬件事件信息
+     * @param channel 连接通道
+     * @throws IOException the io exception  这里异常需要处理
+     */
+    @RabbitListener(queues = {RabbitMqConfig.Queue_EVENT_DC_TO_DMP})
+    public void deliverMessage3(Message message, Channel channel) throws IOException {
         String dataIn = new String(message.getBody(), "utf-8");
-        System.out.println(Thread.currentThread().getName()+":"+Thread.currentThread().getId()+":"+dataIn);
-        channel.basicAck(message.getMessageProperties().getDeliveryTag(),false);
+        System.out.println(Thread.currentThread().getName() + ":" + Thread.currentThread().getId() + ":" + dataIn);
+        channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
     }
     
 }
