@@ -7,6 +7,7 @@ import com.bmofang.mapper.OriginalDataMapper;
 import com.bmofang.service.data.ack.ServerRecvDCUPortDataAck;
 import com.bmofang.service.data.constant.DCUDataPkgType;
 import com.bmofang.service.data.constant.ProtocolVersion;
+import com.bmofang.service.data.filter.PortDataFilter;
 import com.bmofang.service.data.model.DCUCollectData;
 import com.bmofang.service.data.model.DCUDataPkgInfo;
 import com.bmofang.service.data.model.DCUInfo;
@@ -39,11 +40,13 @@ public class UnPackProcess {
     private final DCUDataPkgParser dcuDataPkgParser;
     private final TimeSyncHandler timeSyncHandler;
     private final Producer producer;
+    private final PortDataFilter portDataFilter;
     private HashMap<Long, ServerRecvDCUPortDataAck> dataPkgAcks;
     private Base64.Encoder encoder;
     
     @Autowired
-    public UnPackProcess(OriginalDataMapper originalDataMapper, DCUPortDataPkgParser_P1 dcuPortDataPkgParser_p1, DCUPortDataPkgParser_P2 dcuPortDataPkgParser_p2, DCUDataPkgParser dcuDataPkgParser, TimeSyncHandler timeSyncHandler , Producer producer) {
+    
+    public UnPackProcess(OriginalDataMapper originalDataMapper, DCUPortDataPkgParser_P1 dcuPortDataPkgParser_p1, DCUPortDataPkgParser_P2 dcuPortDataPkgParser_p2, DCUDataPkgParser dcuDataPkgParser, TimeSyncHandler timeSyncHandler, Producer producer,PortDataFilter portDataFilter) {
         this.originalDataMapper = originalDataMapper;
         this.dcuPortDataPkgParser_p1 = dcuPortDataPkgParser_p1;
         this.dcuPortDataPkgParser_p2 = dcuPortDataPkgParser_p2;
@@ -52,6 +55,7 @@ public class UnPackProcess {
         this.dataPkgAcks = new HashMap<>();
         this.encoder = Base64.getEncoder();
         this.producer = producer;
+        this.portDataFilter = portDataFilter;
     }
     
     /**
@@ -158,7 +162,10 @@ public class UnPackProcess {
         long dcuID = DCUDataPkgInfo.getDcuInfo().getDcuID();
         int pkgID = collectData.getPkgID();
         long collectTimestamp = collectData.getCollectTimestamp();
-        String portData = JSON.toJSONString(collectData.getData());
+        HashMap<String, List<DCUPortData>> data = collectData.getData();
+        String portData = JSON.toJSONString(data);
+        String filterString = JSON.toJSONString(portDataFilter.filter(data));
+        System.out.println(filterString);
 //        System.out.println(portData);
         originalData.setDCUID(dcuID);
         originalData.setPkgID(pkgID);

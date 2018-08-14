@@ -129,7 +129,7 @@ public class DCUPortDataPkgParser_P2 {
             for (; portNum <= last_port; portNum++) {
                 short data = BitCoverter.toInt16(dtuData, offset + unpackedBytes);
                 unpackedBytes += SizeOf.INT_16;
-                dcuPortData.add(new DCUPortData(portNum, (double) data / CommonConvention.FLOAT_AMPLIFY_FACTOR));
+                dcuPortData.add(new DCUPortData(portNum, (float) data / CommonConvention.FLOAT_AMPLIFY_FACTOR));
             }
             portData.put(AcqPotyType.PORT_NAME[portType], dcuPortData);
         }
